@@ -100,6 +100,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     path: `/uploads/${req.file.filename}`,
   });
   res.send('File uploaded successfully!');
+  res.redirect("/");
 });
 
 // Set up the file deletion route
