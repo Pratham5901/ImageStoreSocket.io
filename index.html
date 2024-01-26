@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Chat</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="form" action="" enctype="multipart/form-data">
+    <input id="m" autocomplete="off" />
+    <input type="file" name="file" id="file" />
+    <button>Send</button>
+  </form>
+
+  <!-- Display uploaded files -->
+  <div id="fileList">
+    <h3>Uploaded Files:</h3>
+    <ul id="files"></ul>
+  </div>
+
+  <!-- Display existing images -->
+  <div id="imageList">
+    <h3>Existing Images:</h3>
+    <ul id="images"></ul>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(function () {
+      var socket = io();
+
+      
+// Handle existing images
+socket.on('existing images', function (existingImages) {
+      existingImages.forEach(function (image) {
+        const listItem = $('<li>').html(`
+          <div class="image-card">
+            <img src="${window.location.origin}${image.path}" alt="${image.filename}" />
+            <button class="delete-button" data-filename="${image.filename}">Delete</button>
+          </div>
+        `);
+        $('#images').append(listItem);
+
+        // Add click event listener to delete button only once
+        listItem.find('.delete-button').one('click', function () {
+          const filenameToDelete = $(this).data('filename');
+          socket.emit('delete image', { filename: filenameToDelete });
+        });
+      });
+    });
+     // Handle file deletion
+     socket.on('file deleted', function (filename) {
+        // Remove the deleted image from the list
+        $(`[data-filename="${filename}"]`).parent().remove();
+      });
+      // Handle form submission
+      $('form').submit(function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        socket.emit('chat message', $('#m').val());
+        if ($('#file').val()) {
+          const fileInput = $('#file')[0];
+          const file = fileInput.files[0];
+
+          // Read the file as a data URL and send it to the server
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const fileData = event.target.result.split(',')[1];
+            socket.emit('file upload', fileData);
+          };
+          reader.readAsDataURL(file);
+        }
+        $('#m').val('');
+        return false;
+      });
+
+      // Handle chat messages
+      socket.on('chat message', function (msg) {
+        $('#messages').append($('<li>').text(msg));
+      });
+      socket.on('file deleted', function (filename) {
+        console.log('File deleted:', filename);
+
+        // Remove the deleted file from the file list
+        $(`#files [data-filename="${filename}"]`).parent().remove();
+
+        // Remove the deleted image from the image list
+        $(`#images [data-filename="${filename}"]`).parent().remove();
+      });
+      // Handle file uploads
+      socket.on('file upload', function (file) {
+        $('#messages').append($('<li>').text(`File uploaded: ${file.filename} - ${file.path}`));
+
+        // Update the file list with card layout
+        $('#files').append($('<li>').html(`
+          <div class="file-card">
+            <a href="${window.location.origin}${file.path}" target="_blank">${file.filename}</a>
+          </div>
+        `));
+
+        // Check if the uploaded file is an image
+        if (file.filename.match(/\.(jpeg|jpg|gif|png)$/)) {
+          // If it's an image, add it to the image list
+          $('#images').append($('<li>').html(`
+            <div class="image-card">
+              <img src="${window.location.origin}${file.path}" alt="${file.filename}" />
+            </div>
+          `));
+        }
+      });
+    });
+  </script>
+</body>
+</html>

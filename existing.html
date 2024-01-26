@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your App Title</title>
+  <!-- Include your existing stylesheets -->
+  <link rel="stylesheet" href="/public/styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Your existing header content goes here -->
+    <header>
+      <h1>Your App</h1>
+    </header>
+
+    <!-- Your existing navigation menu goes here -->
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Section for displaying images in cards -->
+    <section class="card-container">
+      <div class="image-card">
+        <img src="your_image_url_1.jpg" alt="Image 1">
+        <button class="delete-button">Delete</button>
+      </div>
+    </section>
+
+    <section class="card-container">
+      <div class="image-card">
+        <img src="your_image_url_2.jpg" alt="Image 2">
+        <button class="delete-button">Delete</button>
+      </div>
+    </section>
+
+    <!-- Repeat the above structure for additional images -->
+
+    <!-- Form for file uploads -->
+    <form>
+      <input type="file" name="file" id="file">
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+
+  <!-- Include your existing scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="your_existing_script.js"></script>
+</body>
+</html>
