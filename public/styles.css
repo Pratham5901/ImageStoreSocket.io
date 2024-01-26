@@ -12,6 +12,7 @@ ul {
 
 #fileList {
   margin-top: 20px;
+  margin-left: 20px;
 }
 
 #files .file-card {
@@ -33,6 +34,7 @@ ul {
 
 #imageList {
   margin-top: 20px;
+  margin-left: 20px;
 }
 
 #images .image-card img {
@@ -109,6 +111,7 @@ section {
 
 form {
   margin-top: 20px;
+  margin-left: 20px;
 }
 
 input, button {
